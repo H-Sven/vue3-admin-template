@@ -2,7 +2,7 @@
 
 import { resolve } from "node:path"
 import vue from "@vitejs/plugin-vue"
-import UnoCSS from "unocss/vite"
+import tailwindcss from "tailwindcss"
 import AutoImport from "unplugin-auto-import/vite"
 import SvgComponent from "unplugin-svg-component/vite"
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
@@ -68,8 +68,7 @@ export default defineConfig(({ mode }) => {
            */
           manualChunks: {
             vue: ["vue", "vue-router", "pinia"],
-            element: ["element-plus", "@element-plus/icons-vue"],
-            vxe: ["vxe-table"]
+            element: ["element-plus", "@element-plus/icons-vue"]
           }
         }
       },
@@ -97,7 +96,11 @@ export default defineConfig(({ mode }) => {
     // CSS 相关配置
     css: {
       // 线程中运行 CSS 预处理器
-      preprocessorMaxWorkers: true
+      preprocessorMaxWorkers: true,
+      // PostCSS 配置
+      postcss: {
+        plugins: [tailwindcss]
+      }
     },
     // 插件配置
     plugins: [
@@ -126,8 +129,6 @@ export default defineConfig(({ mode }) => {
         dts: true,
         dtsDir: resolve(__dirname, "types/auto")
       }),
-      // 原子化 CSS
-      UnoCSS(),
       // 自动按需导入 API
       AutoImport({
         imports: ["vue", "vue-router", "pinia"],

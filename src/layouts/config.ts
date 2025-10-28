@@ -39,7 +39,7 @@ const DEFAULT_CONFIG: LayoutsConfig = {
   showSettings: false,
   showTagsView: true,
   fixedHeader: true,
-  showFooter: true,
+  showFooter: false,
   showLogo: false,
   showNotify: false,
   showThemeSwitch: false,

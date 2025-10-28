@@ -64,6 +64,27 @@ export const constantRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: "/account",
+    component: Layouts,
+    redirect: "/account/list",
+    name: "Account",
+    meta: {
+      title: "账号管理",
+      elIcon: "User"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/pages/account/list/index.vue"),
+        name: "List",
+        meta: {
+          title: "账号列表",
+          elIcon: "User"
+        }
+      }
+    ]
+  },
+  {
     path: "/content",
     component: Layouts,
     redirect: "/content/interaction",
@@ -75,23 +96,23 @@ export const constantRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: "interaction",
-        component: () => import("@/pages/demo/unocss/index.vue"),
-        name: "interaction",
+        component: () => import("@/pages/content/page/interaction/index.vue"),
+        name: "Interaction",
         meta: {
           title: "互动模块"
         }
       },
       {
         path: "teacher",
-        component: () => import("@/pages/demo/element-plus/index.vue"),
+        component: () => import("@/pages/content/page/teacher/index.vue"),
         name: "Teacher",
         meta: {
-          title: "老师模块"
+          title: "教师模块"
         }
       },
       {
         path: "feature",
-        component: () => import("@/pages/demo/vxe-table/index.vue"),
+        component: () => import("@/pages/content/page/feature/index.vue"),
         name: "Feature",
         meta: {
           title: "精选模块"
@@ -99,7 +120,7 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "chat",
-        component: () => import("@/pages/demo/unocss/index.vue"),
+        component: () => import("@/pages/content/page/chat/index.vue"),
         name: "Chat",
         meta: {
           title: "私聊模块"

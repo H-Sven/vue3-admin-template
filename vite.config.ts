@@ -2,7 +2,6 @@
 
 import { resolve } from "node:path"
 import vue from "@vitejs/plugin-vue"
-import tailwindcss from "tailwindcss"
 import AutoImport from "unplugin-auto-import/vite"
 import SvgComponent from "unplugin-svg-component/vite"
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
@@ -96,11 +95,7 @@ export default defineConfig(({ mode }) => {
     // CSS 相关配置
     css: {
       // 线程中运行 CSS 预处理器
-      preprocessorMaxWorkers: true,
-      // PostCSS 配置
-      postcss: {
-        plugins: [tailwindcss]
-      }
+      preprocessorMaxWorkers: true
     },
     // 插件配置
     plugins: [

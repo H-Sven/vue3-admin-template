@@ -1,3 +1,9 @@
+<template>
+  <el-config-provider :locale="zhCn">
+    <router-view />
+  </el-config-provider>
+</template>
+
 <script lang="ts" setup>
 import { useGreyAndColorWeakness } from "@@/composables/useGreyAndColorWeakness"
 import { useTheme } from "@@/composables/useTheme"
@@ -15,9 +21,3 @@ initGreyAndColorWeakness()
 
 // #endregion
 </script>
-
-<template>
-  <el-config-provider :locale="zhCn">
-    <router-view />
-  </el-config-provider>
-</template>

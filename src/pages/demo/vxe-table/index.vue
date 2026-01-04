@@ -1,8 +1,75 @@
+<template>
+  <div class="app-container">
+    <el-alert
+      title="数据来源"
+      type="success"
+      description="由 Apifox 提供在线 Mock，数据不具备真实性，仅供简单的 CRUD 操作演示"
+      show-icon
+    />
+    <el-alert
+      title="注意"
+      type="warning"
+      description="当前示例对应的 Vxe Table 版本最高兼容到 4.6.25"
+      show-icon
+    />
+    <!-- 表格 -->
+    <vxe-grid ref="xGridDom" v-bind="xGridOpt">
+      <!-- 左侧按钮列表 -->
+      <template #toolbar-btns>
+        <vxe-button status="primary" icon="vxe-icon-add" @click="crudStore.onShowModal()">
+          新增用户
+        </vxe-button>
+        <vxe-button status="danger" icon="vxe-icon-delete">
+          批量删除
+        </vxe-button>
+      </template>
+      <!-- 角色列 -->
+      <template #role-column="{ row, column }">
+        <el-tag
+          :type="row[column.field] === 'admin' ? 'primary' : 'warning'"
+          effect="plain"
+        >
+          {{ row[column.field] }}
+        </el-tag>
+      </template>
+      <!-- 状态列 -->
+      <template #status-column="{ row, column }">
+        <el-tag
+          :type="row[column.field] ? 'success' : 'danger'"
+          effect="plain"
+        >
+          {{ row[column.field] ? "启用" : "禁用" }}
+        </el-tag>
+      </template>
+      <!-- 操作 -->
+      <template #row-operate="{ row }">
+        <el-button link type="primary" @click="crudStore.onShowModal(row)">
+          修改
+        </el-button>
+        <el-button link type="danger" @click="crudStore.onDelete(row)">
+          删除
+        </el-button>
+      </template>
+    </vxe-grid>
+    <!-- 弹窗 -->
+    <vxe-modal ref="xModalDom" v-bind="xModalOpt">
+      <!-- 表单 -->
+      <vxe-form ref="xFormDom" v-bind="xFormOpt" />
+    </vxe-modal>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import type { TableResponseData } from "@@/apis/tables/type"
 import type { ElMessageBoxOptions } from "element-plus"
-import type { VxeFormInstance, VxeFormProps, VxeGridInstance, VxeGridProps, VxeModalInstance, VxeModalProps } from "vxe-table"
 import { deleteTableDataApi, getTableDataApi } from "@@/apis/tables"
+// 由于 vxe-table 缺少类型声明，先使用 any 规避编译错误
+type VxeFormInstance = any
+type VxeFormProps = any
+type VxeGridInstance = any
+type VxeGridProps = any
+type VxeModalInstance = any
+type VxeModalProps = any
 
 defineOptions({
   // 命名当前组件
@@ -85,7 +152,7 @@ const xGridOpt: VxeGridProps = reactive({
   /** 自定义列配置项 */
   customConfig: {
     /** 是否允许列选中  */
-    checkMethod: ({ column }) => !["username"].includes(column.field)
+    checkMethod: ({ column }: { column: { field: string } }) => !["username"].includes(column.field)
   },
   /** 列配置 */
   columns: [
@@ -145,7 +212,7 @@ const xGridOpt: VxeGridProps = reactive({
       total: "total"
     },
     ajax: {
-      query: ({ page, form }) => {
+      query: ({ page, form }: any) => {
         xGridOpt.loading = true
         crudStore.clearTable()
         return new Promise((resolve) => {
@@ -157,7 +224,7 @@ const xGridOpt: VxeGridProps = reactive({
               // 总数
               total = res.data.total
               // 列表数据
-              result = res.data.list
+              result = res.data.list as any
             }
             xGridOpt.loading = false
             // 返回值有格式要求，详情见 vxe-table 官方文档
@@ -262,7 +329,7 @@ const xFormOpt: VxeFormProps = reactive({
     username: [
       {
         required: true,
-        validator: ({ itemValue }) => {
+        validator: ({ itemValue }: any) => {
           switch (true) {
             case !itemValue:
               return new Error("请输入")
@@ -275,7 +342,7 @@ const xFormOpt: VxeFormProps = reactive({
     password: [
       {
         required: true,
-        validator: ({ itemValue }) => {
+        validator: ({ itemValue }: any) => {
           switch (true) {
             case !itemValue:
               return new Error("请输入")
@@ -320,7 +387,7 @@ const crudStore = reactive({
   /** 确定并保存 */
   onSubmitForm: () => {
     if (xFormOpt.loading) return
-    xFormDom.value?.validate((errMap) => {
+    xFormDom.value?.validate((errMap: any) => {
       if (errMap) return
       xFormOpt.loading = true
       const callback = () => {
@@ -382,67 +449,6 @@ const crudStore = reactive({
 })
 // #endregion
 </script>
-
-<template>
-  <div class="app-container">
-    <el-alert
-      title="数据来源"
-      type="success"
-      description="由 Apifox 提供在线 Mock，数据不具备真实性，仅供简单的 CRUD 操作演示"
-      show-icon
-    />
-    <el-alert
-      title="注意"
-      type="warning"
-      description="当前示例对应的 Vxe Table 版本最高兼容到 4.6.25"
-      show-icon
-    />
-    <!-- 表格 -->
-    <vxe-grid ref="xGridDom" v-bind="xGridOpt">
-      <!-- 左侧按钮列表 -->
-      <template #toolbar-btns>
-        <vxe-button status="primary" icon="vxe-icon-add" @click="crudStore.onShowModal()">
-          新增用户
-        </vxe-button>
-        <vxe-button status="danger" icon="vxe-icon-delete">
-          批量删除
-        </vxe-button>
-      </template>
-      <!-- 角色列 -->
-      <template #role-column="{ row, column }">
-        <el-tag
-          :type="row[column.field] === 'admin' ? 'primary' : 'warning'"
-          effect="plain"
-        >
-          {{ row[column.field] }}
-        </el-tag>
-      </template>
-      <!-- 状态列 -->
-      <template #status-column="{ row, column }">
-        <el-tag
-          :type="row[column.field] ? 'success' : 'danger'"
-          effect="plain"
-        >
-          {{ row[column.field] ? "启用" : "禁用" }}
-        </el-tag>
-      </template>
-      <!-- 操作 -->
-      <template #row-operate="{ row }">
-        <el-button link type="primary" @click="crudStore.onShowModal(row)">
-          修改
-        </el-button>
-        <el-button link type="danger" @click="crudStore.onDelete(row)">
-          删除
-        </el-button>
-      </template>
-    </vxe-grid>
-    <!-- 弹窗 -->
-    <vxe-modal ref="xModalDom" v-bind="xModalOpt">
-      <!-- 表单 -->
-      <vxe-form ref="xFormDom" v-bind="xFormOpt" />
-    </vxe-modal>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .el-alert {

@@ -21,7 +21,7 @@ export interface TableData {
   id: number
   phone: string
   roles: string
-  status: boolean
+  status: number
   username: string
 }
 
